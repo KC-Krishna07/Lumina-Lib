@@ -4,6 +4,18 @@ LuminaLib is a full-stack MERN (MongoDB, Express, React, Node.js) application de
 
 ---
 
+## 🌐 External API
+
+This project uses the Open Library API to fetch book data.
+
+If required, create your own API credentials and add them to your `.env` file:
+
+```env
+OPEN_LIBRARY_API_KEY=your_api_key_here
+```
+
+---
+
 ## 🖼️ Project Showcases
 
 ### 🏠 Home Dashboard
