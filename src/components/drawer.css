@@ -1,0 +1,174 @@
+/* drawer.css */
+.drawer_overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.drawer_content {
+  width: 400px;
+  height: 100%;
+  background: #111;
+  border-left: 2px solid #00e5ff;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+  animation: drawerSlide 0.3s ease-out;
+}
+
+@keyframes drawerSlide {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.close_drawer {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: none;
+  border: none;
+  color: #00e5ff;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.drawer_img {
+  width: 150px;
+  border-radius: 8px;
+  margin: 0 auto 20px;
+  display: block;
+}
+
+.drawer_reviews_section {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* --- STAR RATING UI --- */
+.star_rating {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.star_rating button {
+  background: none !important; /* Forces reset of global button styles */
+  border: none !important;
+  padding: 0 !important;
+  width: auto !important; 
+  cursor: pointer;
+  font-size: 1.8rem;
+  line-height: 1;
+  transition: transform 0.1s ease;
+}
+
+.star_rating button:hover {
+  transform: scale(1.2);
+}
+
+.star_rating .on { color: #00e5ff; }
+.star_rating .off { color: #444; }
+
+.rating_text {
+  margin-left: 10px;
+  color: #888;
+  font-size: 0.85rem;
+}
+
+/* --- FORM STYLES --- */
+.drawer_form textarea {
+  width: 100%;
+  height: 80px;
+  background: #222;
+  color: white;
+  border: 1px solid #444;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  resize: none;
+}
+
+.drawer_form button[type="submit"] {
+  background: #00e5ff;
+  color: black;
+  border: none;
+  padding: 10px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.3s;
+}
+
+.drawer_form button[type="submit"]:hover {
+  background: #00b8d4;
+}
+
+/* --- REVIEW LIST STYLES --- */
+.drawer_list {
+  margin-top: 20px;
+  overflow-y: auto;
+  flex-grow: 1;
+  padding-right: 5px;
+}
+
+/* Custom Scrollbar for the list */
+.drawer_list::-webkit-scrollbar { width: 5px; }
+.drawer_list::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+.drawer_item {
+  padding: 12px 0;
+  border-bottom: 1px solid #333;
+}
+
+.item_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.item_rating {
+  color: #00e5ff;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+}
+
+.drawer_item strong { color: #00e5ff; font-size: 0.9rem; }
+.drawer_item p { color: #ccc; margin-top: 2px; font-size: 0.95rem; }
+
+.item_meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.delete_review_btn {
+  background: none !important;
+  border: none !important;
+  color: #ff4d4d !important;
+  font-size: 20px !important;
+  cursor: pointer;
+  padding: 0 !important;
+  width: auto !important;
+  line-height: 1;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.delete_review_btn:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}

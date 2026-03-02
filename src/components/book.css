@@ -1,0 +1,143 @@
+/**
+ * Banner Component Architecture
+ */
+.banner_main {
+  position: relative;
+  height: 70vh;
+  min-height: 500px; /* Ensures it doesn't get too short on tiny phones */
+  overflow: hidden;
+  color: white;
+  background-color: #000;
+}
+
+.banner_slider {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.banner_track {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.banner_slide {
+  flex: 0 0 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.banner_overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0,0,0,0.9) 0%,
+    rgba(0,0,0,0.6) 50%,
+    rgba(0,0,0,0.4) 100%
+  );
+}
+
+.banner_content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 5vw, 60px);
+  z-index: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 100px);
+}
+
+.banner_image_focus {
+  height: clamp(200px, 40vh, 350px);
+  aspect-ratio: 2/3;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  user-select: none;
+  object-fit: cover;
+}
+
+.banner_text_box h1 {
+  font-size: clamp(1.5rem, 5vw, 3.5rem);
+  font-weight: 700;
+  margin-bottom: 15px;
+  line-height: 1.2;
+}
+
+.banner_text_box p {
+  max-width: 500px;
+  line-height: 1.5;
+  opacity: 0.8;
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limit description lines on small screens */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.banner_arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2.5rem;
+  background: rgba(0,0,0,0.3);
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+  border-radius: 5px;
+}
+
+.banner_arrow.left { left: 10px; }
+.banner_arrow.right { right: 10px; }
+
+/* --- MOBILE RESPONSIVENESS --- */
+@media (max-width: 768px) {
+  .banner_main {
+    height: 80vh; /* Give more height for vertical stacking */
+  }
+
+  .banner_overlay {
+    /* Change gradient to vertical for mobile so text is readable over the image */
+    background: linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.5) 0%,
+      rgba(0,0,0,0.8) 60%,
+      rgba(0,0,0,1) 100%
+    );
+  }
+
+  .banner_content {
+    flex-direction: column; /* Stack image on top of text */
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+    padding: 0 20px;
+  }
+
+  .banner_image_focus {
+    height: 220px; /* Smaller image for mobile */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+  }
+
+  .banner_text_box p {
+    margin: 0 auto;
+    -webkit-line-clamp: 2; /* Shorter text for small screens */
+  }
+
+  .banner_arrow {
+    display: none; /* Hide arrows on mobile to save space (user can swipe or wait) */
+  }
+}
