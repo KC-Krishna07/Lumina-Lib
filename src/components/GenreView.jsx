@@ -5,20 +5,26 @@ const GenreView = ({ genreName, onSave, onLike, onOpenReviews, savedBooks, liked
   const [genreBooks, setGenreBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://openlibrary.org/search.json";
 
   useEffect(() => {
     const fetchGenreData = async () => {
-      if (!API_BASE_URL) return;
+      // 1. Guard against empty/undefined query
+      if (!genreName || !genreName.trim()) {
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       try {
+        const cleanName = genreName.toLowerCase().trim();
         const isCommonGenre = [
           "horror", "romance", "sci-fi", "thriller", 
           "mystery", "fantasy", "history"
-        ].includes(genreName.toLowerCase());
+        ].includes(cleanName);
         
         const url = isCommonGenre 
-          ? `${API_BASE_URL}?subject=${genreName.toLowerCase()}&limit=150`
+          ? `${API_BASE_URL}?subject=${encodeURIComponent(cleanName)}&limit=150`
           : `${API_BASE_URL}?q=${encodeURIComponent(genreName)}&limit=150`;
 
         const response = await fetch(url);
@@ -30,9 +36,8 @@ const GenreView = ({ genreName, onSave, onLike, onOpenReviews, savedBooks, liked
             id: doc.key,
             volumeInfo: {
               title: doc.title,
-              authors: doc.author_name || ["Unknown Author"], // Syncing with App.jsx logic
+              authors: doc.author_name || ["Unknown Author"],
               imageLinks: { 
-                // Using Medium covers for faster loading in search/genre grids
                 thumbnail: `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg` 
               },
               averageRating: doc.ratings_average 
@@ -56,7 +61,7 @@ const GenreView = ({ genreName, onSave, onLike, onOpenReviews, savedBooks, liked
   if (loading) return (
     <div className="loading_spinner_container">
       <div className="loading_spinner"></div>
-      <p>Querying Archives: {genreName}...</p>
+      <p>Querying Archives: {genreName || "Searching"}...</p>
     </div>
   );
 
