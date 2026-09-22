@@ -1,4 +1,3 @@
-// importing tools
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -7,51 +6,72 @@ require('dotenv').config();
 
 const app = express();
 
-// --- Global Middleware ---
-// 1. CORS: Configured to allow your React frontend (port 5173) to communicate with this API.
+// --- 1. CORS Configuration (Dynamic for Local + Vercel) ---
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  process.env.CLIENT_URL // Set this in Vercel settings (e.g., https://lumina-lib.vercel.app)
+].filter(Boolean);
+
 app.use(cors({
-    origin: 'http://localhost:5173', 
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, or Postman)
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(null, true); // Or set to callback(null, true) during testing
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
-// 2. Body Parser: Essential for reading JSON data sent from your "Sign In" modal.
-app.use(express.json()); 
+// --- 2. Body Parser ---
+app.use(express.json());
 
-// --- API Routes ---
-// This mounts your authentication logic (signup/login) under the /api/auth prefix.
+// --- 3. Database Connection (Cached for Serverless) ---
+let isConnected = false;
+const connectDB = async () => {
+  if (isConnected) return;
+  try {
+    const db = await mongoose.connect(process.env.MONGO_URI);
+    isConnected = db.connections[0].readyState;
+    console.log("✅ MongoDB Connected Successfully");
+  } catch (err) {
+    console.error("❌ Database Connection Error:", err.message);
+  }
+};
+
+// Middleware to ensure DB is connected before processing any request
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
+
+// --- 4. API Routes ---
 app.use('/api/auth', authRoutes);
 
-// --- Database Connection ---
-const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI;
-
-// Connection logic with error handling to ensure your server doesn't crash on DB failure.
-mongoose.connect(MONGO_URI)
-  .then(() => console.log("✅ MongoDB Connected Successfully"))
-  .catch((err) => {
-    console.error("❌ Database Connection Error:", err.message);
-    process.exit(1); // Stop the server if DB connection fails
-  });
-
-// --- Base Route ---
-// Useful for health checks to ensure the backend is live.
+// Base Route
 app.get('/', (req, res) => {
   res.status(200).json({ status: "active", message: "Lumina-Lib Server is Running..." });
 });
 
-// --- 404 & Global Error Handling ---
-// Catch-all for undefined routes
+// --- 5. Error Handlers ---
 app.use((req, res) => {
-    res.status(404).json({ message: "Route not found" });
+  res.status(404).json({ message: "Route not found" });
 });
 
-// Global error middleware to catch unhandled exceptions and prevent server crashes.
 app.use((err, req, res, next) => {
-    console.error("Critical Server Error:", err.stack);
-    res.status(500).json({ message: "Internal Server Error", error: err.message });
+  console.error("Critical Server Error:", err.stack);
+  res.status(500).json({ message: "Internal Server Error", error: err.message });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server is floating on http://localhost:${PORT}`);
-});
+// --- 6. Conditional Local Server Start ---
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
