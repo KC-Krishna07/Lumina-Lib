@@ -1,4 +1,4 @@
-const mongoose = require('mongoose'); // This was the missing line!
+const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
     username: { type: String, required: true },

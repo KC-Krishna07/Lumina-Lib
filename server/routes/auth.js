@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Review = require('../models/Review');
 
-// --- 1. UPDATE PASSWORD (IMPORTANT: Keep this at the top) ---
+// --- 1. UPDATE PASSWORD ---
 router.put('/profile/update-password', async (req, res) => {
     const { userId, oldPassword, newPassword } = req.body;
     try {

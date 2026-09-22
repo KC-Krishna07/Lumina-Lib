@@ -101,7 +101,7 @@ function App() {
             volumeInfo: {
               title: doc.title,
               imageLinks: { 
-                thumbnail: `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg` // -M is faster than -L
+                thumbnail: `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`
               },
               averageRating: doc.ratings_average ? doc.ratings_average.toFixed(1) : (Math.random() * 0.4 + 4.1).toFixed(1),
               authors: doc.author_name || ["Unknown Author"]

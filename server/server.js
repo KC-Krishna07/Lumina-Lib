@@ -1,3 +1,4 @@
+// importing tools
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -36,7 +37,7 @@ mongoose.connect(MONGO_URI)
 // --- Base Route ---
 // Useful for health checks to ensure the backend is live.
 app.get('/', (req, res) => {
-  res.status(200).json({ status: "active", message: "Bookflix Server is Running..." });
+  res.status(200).json({ status: "active", message: "Lumina-Lib Server is Running..." });
 });
 
 // --- 404 & Global Error Handling ---
