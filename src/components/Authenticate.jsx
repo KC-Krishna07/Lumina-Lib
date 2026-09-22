@@ -18,7 +18,7 @@ const Authenticate = ({ isOpen, onClose, setUser, setSavedBooks, setLikedBooks }
     const endpoint = isLogin ? "/api/auth/login" : "/api/auth/signup";
 
     try {
-      const response = await fetch(`http://localhost:5000${endpoint}`, {
+      const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
