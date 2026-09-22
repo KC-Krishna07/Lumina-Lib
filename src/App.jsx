@@ -29,7 +29,8 @@ function App() {
   const [savedBooks, setSavedBooks] = useState([]);
   const [likedBooks, setLikedBooks] = useState([]);
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  // Fallback to OpenLibrary API if VITE_API_BASE_URL environment variable is omitted
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://openlibrary.org/search.json";
 
   // 1. Initial Load from LocalStorage
   useEffect(() => {
@@ -53,14 +54,14 @@ function App() {
     }
   }, [savedBooks, likedBooks, isReady]);
 
-  // 3. Database Sync Effect (Debounced)
+  // 3. Database Sync Effect (Debounced) - Fixed relative path for Vercel
   useEffect(() => {
     const syncWithDatabase = async () => {
-      const activeUserId = user?.id || user?._id; // Handle both id formats
+      const activeUserId = user?.id || user?._id; 
       if (!isReady || !activeUserId) return;
 
       try {
-        await fetch(`http://localhost:5000/api/auth/sync`, {
+        await fetch(`/api/auth/sync`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ 
@@ -74,14 +75,13 @@ function App() {
       }
     };
 
-    const timeoutId = setTimeout(syncWithDatabase, 1500); // 1.5s delay to save server requests
+    const timeoutId = setTimeout(syncWithDatabase, 1500);
     return () => clearTimeout(timeoutId);
   }, [savedBooks, likedBooks, user, isReady]);
 
   // 4. Global Data Fetching
   useEffect(() => {
     const fetchLibraryData = async () => {
-      if (!API_BASE_URL) return;
       setLoading(true);
       try {
         const [homeRes, popRes, ratedRes] = await Promise.all([
